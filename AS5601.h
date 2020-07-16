@@ -10,6 +10,12 @@
 #define AS5601_RESOLUTION_AB            2048
 #define AS5601_RESOLUTION_I2C           4096
 
+enum class EncoderDirection
+{
+  CW = 1,
+  CCW = -1,
+};
+
 class AS5601
 {
   public:
@@ -17,11 +23,15 @@ class AS5601
     float getEncoderDegree();
     void setPosition(long newPosition);
     void updateEncoderCount(void);
+
+    // set CW or CCW
+    void setDirection(EncoderDirection dir);
     
     virtual long getEncoderCount();
     
   protected:
     int _pin1, _pin2;
+    int _dir;
     int8_t _oldState;
     long _count;
     float encoder_resolution;

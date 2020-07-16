@@ -10,10 +10,16 @@ AS5601::AS5601()
 {
   _oldState = 3;
   _count = 0;
+  _dir = EncoderDirection::CW;
 }
 
 float  AS5601::getEncoderDegree() {
   return (float)getEncoderCount() * 360.0/encoder_resolution;
+}
+
+void AS5601::setDirection(EncoderDirection dir)
+{
+  _dir = dir;
 }
 
 /*using AB***************************************************************************************/
@@ -56,7 +62,7 @@ void AS5601_AB::updateEncoderCount(void)
   int8_t thisState = sig1 | (sig2 << 1);
 
   if (_oldState != thisState) {
-    _count += EncoderIndexTable[thisState | (_oldState<<2)];
+    _count += EncoderIndexTable[thisState | (_oldState<<2)] * _dir;
     _oldState = thisState;
   }
 }
@@ -89,5 +95,5 @@ long  AS5601_I2C::getEncoderCount() {
   _count  = ((uint16_t)Wire.read() << 8) & 0x0F00;
   _count |= (uint16_t)Wire.read();
 
-  return _count;
+  return _count * _dir;
 }
