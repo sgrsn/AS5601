@@ -10,7 +10,7 @@ AS5601::AS5601()
 {
   _oldState = 3;
   _count = 0;
-  _dir = EncoderDirection::CW;
+  _dir = (int)EncoderDirection::CW;
 }
 
 float  AS5601::getEncoderDegree() {
@@ -19,7 +19,7 @@ float  AS5601::getEncoderDegree() {
 
 void AS5601::setDirection(EncoderDirection dir)
 {
-  _dir = dir;
+  _dir = (int)dir;
 }
 
 /*using AB***************************************************************************************/
