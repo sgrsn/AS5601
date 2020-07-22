@@ -21,13 +21,16 @@ class AS5601
   public:
     AS5601();
     float getEncoderDegree();
+    float measureTimeInterval();
+    float getDegreePerSeconds();
+
     void setPosition(long newPosition);
     void updateEncoderCount(void);
 
     // set CW or CCW
     void setDirection(EncoderDirection dir);
     
-    virtual long getEncoderCount();
+    virtual long getEncoderCount(){};
     
   protected:
     int _pin1, _pin2;
@@ -35,6 +38,12 @@ class AS5601
     int8_t _oldState;
     long _count;
     float encoder_resolution;
+
+    unsigned long current_time;
+    unsigned long prev_time;
+
+    float current_degree;
+    float prev_degree;  
 };
 
 class AS5601_AB : public AS5601

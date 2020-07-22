@@ -11,10 +11,34 @@ AS5601::AS5601()
   _oldState = 3;
   _count = 0;
   _dir = (int)EncoderDirection::CW;
+
+  current_time = 0;
+  prev_time = 0;
+  measureTimeInterval();
+
+  prev_degree = 0;
+  current_degree = 0;
 }
 
-float  AS5601::getEncoderDegree() {
+float AS5601::getEncoderDegree() {
   return (float)getEncoderCount() * 360.0/encoder_resolution;
+}
+
+float AS5601::measureTimeInterval()
+{
+  prev_time = current_time;
+  current_time = micros();
+  float dt = float(current_time - prev_time) / 1000000.0;
+  return dt;
+}
+
+float AS5601::getDegreePerSeconds()
+{
+  float dt = measureTimeInterval();
+  prev_degree = current_degree;
+  current_degree = getEncoderDegree();
+
+  return (current_degree - prev_degree) / dt;
 }
 
 void AS5601::setDirection(EncoderDirection dir)
