@@ -79,6 +79,26 @@ void AS5601_AB::Encoder_I2C_init(void) {
   delay(1);
 }
 
+void AS5601_AB::Encoder_I2C_init_64(void) {
+  // Set AS5601 resolution 2048ppr
+  Wire.beginTransmission(AS5600_AS5601_DEV_ADDRESS);
+  Wire.write(AS5601_REG_ABN);
+  Wire.write(0b00000011);   // ABN(3:0)
+  Wire.endTransmission();
+  delay(1);
+  encoder_resolution = 64;
+}
+
+void AS5601_AB::Encoder_I2C_init_8(void) {
+  // Set AS5601 resolution 2048ppr
+  Wire.beginTransmission(AS5600_AS5601_DEV_ADDRESS);
+  Wire.write(AS5601_REG_ABN);
+  Wire.write(0b00000000);   // ABN(3:0)
+  Wire.endTransmission();
+  delay(1);
+  encoder_resolution = 8;
+}
+
 void AS5601_AB::updateEncoderCount(void)
 {
   int sig1 = digitalRead(_pin1);

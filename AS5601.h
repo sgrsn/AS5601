@@ -51,6 +51,8 @@ class AS5601_AB : public AS5601
   public:
   void Encoder_GPIO_init(int pin1, int pin2, void (*fptr)());
   void Encoder_I2C_init(void);
+  void Encoder_I2C_init_64(void);
+  void Encoder_I2C_init_8(void);
   void init(int pin1, int pin2, void (*fptr)());
   void updateEncoderCount(void);
   long getEncoderCount();
