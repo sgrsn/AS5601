@@ -20,7 +20,21 @@ AS5601::AS5601()
   current_degree = 0;
 }
 
-float AS5601::getEncoderDegree() {
+void AS5601::update()
+{
+  updateEncoderCount();
+  float dt = measureTimeInterval();
+  prev_degree = current_degree;
+  current_degree = getDegree();
+  deg_per_sec_ = (current_degree - prev_degree) / dt;
+}
+
+long AS5601::getEncoderCount()
+{
+  return _count;
+}
+
+float AS5601::getDegree() {
   return (float)getEncoderCount() * 360.0/encoder_resolution;
 }
 
@@ -34,11 +48,17 @@ float AS5601::measureTimeInterval()
 
 float AS5601::getDegreePerSeconds()
 {
-  float dt = measureTimeInterval();
-  prev_degree = current_degree;
-  current_degree = getEncoderDegree();
+  return deg_per_sec_;
+}
 
-  return (current_degree - prev_degree) / dt;
+void AS5601::setCount(long newCount)
+{
+  _count = newCount;
+}
+
+int AS5601::getEncoderResolution()
+{
+  return (int)encoder_resolution;
 }
 
 void AS5601::setDirection(EncoderDirection dir)
@@ -100,6 +120,10 @@ void AS5601_AB::Encoder_I2C_init_8(void) {
 }
 
 void AS5601_AB::updateEncoderCount(void)
+{  
+}
+
+void AS5601_AB::interruptEncoderCount(void)
 {
   int sig1 = digitalRead(_pin1);
   int sig2 = digitalRead(_pin2);
@@ -109,10 +133,6 @@ void AS5601_AB::updateEncoderCount(void)
     _count += EncoderIndexTable[thisState | (_oldState<<2)] * _dir;
     _oldState = thisState;
   }
-}
-
-long  AS5601_AB::getEncoderCount() {
-  return _count;
 }
 
 /*using i2c*******************************************************************************************/
@@ -133,11 +153,10 @@ void AS5601_I2C::Encoder_I2C_init(void) {
   Wire.endTransmission(false);
 }
 
-long  AS5601_I2C::getEncoderCount() {
+void AS5601_I2C::updateEncoderCount(void)
+{
   Wire.requestFrom(AS5600_AS5601_DEV_ADDRESS, 2);
-  
   _count  = ((uint16_t)Wire.read() << 8) & 0x0F00;
   _count |= (uint16_t)Wire.read();
-
-  return _count * _dir;
+  _count = _count * _dir;
 }
